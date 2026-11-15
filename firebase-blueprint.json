@@ -1,0 +1,204 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile, model preferences, voice configuration, and memory consent settings.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Firebase Auth UID of the user." },
+        "displayName": { "type": "string", "description": "User display name." },
+        "email": { "type": "string", "description": "User email address." },
+        "photoUrl": { "type": "string", "description": "Profile avatar URL." },
+        "preferredModel": {
+          "type": "string",
+          "enum": ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-4-argon"],
+          "description": "Default Gemini model ID for conversations."
+        },
+        "themeMode": {
+          "type": "string",
+          "enum": ["system", "dark", "light"],
+          "description": "App color theme preference."
+        },
+        "memoryPermissionGranted": {
+          "type": "boolean",
+          "description": "Whether Jarvis AI has permission to store persistent memories."
+        },
+        "autoSpeakResponses": {
+          "type": "boolean",
+          "description": "Whether Jarvis automatically reads AI responses aloud."
+        },
+        "wakeWordEnabled": {
+          "type": "boolean",
+          "description": "Whether hands-free Jarvis wake-phrase standby is enabled in Voice Mode."
+        },
+        "speechRate": {
+          "type": "number",
+          "description": "Text-to-speech playback rate (0.5 to 2.0)."
+        },
+        "selectedVoiceName": {
+          "type": "string",
+          "description": "Preferred Android TextToSpeech voice identifier."
+        },
+        "systemInstructions": {
+          "type": "string",
+          "description": "Custom persona or response instructions provided by the user."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp (FieldValue.serverTimestamp()) when profile was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp (FieldValue.serverTimestamp()) when profile was last updated."
+        }
+      },
+      "required": [
+        "userId",
+        "displayName",
+        "preferredModel",
+        "themeMode",
+        "memoryPermissionGranted",
+        "autoSpeakResponses",
+        "wakeWordEnabled",
+        "speechRate",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "A persistent AI conversation thread owned by a user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner Firebase Auth UID." },
+        "title": { "type": "string", "description": "Conversation title." },
+        "modelId": {
+          "type": "string",
+          "enum": ["gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-4-argon"],
+          "description": "Gemini model used for this thread."
+        },
+        "lastMessagePreview": { "type": "string", "description": "Preview of the most recent message." },
+        "messageCount": { "type": "integer", "description": "Number of messages in this conversation." },
+        "pinned": { "type": "boolean", "description": "Whether conversation is pinned to the top." },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp (FieldValue.serverTimestamp()) when conversation was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp (FieldValue.serverTimestamp()) of the latest activity."
+        }
+      },
+      "required": [
+        "userId",
+        "title",
+        "modelId",
+        "lastMessagePreview",
+        "messageCount",
+        "pinned",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "A single message turn inside a conversation.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner Firebase Auth UID." },
+        "conversationId": { "type": "string", "description": "Parent conversation document ID." },
+        "role": {
+          "type": "string",
+          "enum": ["user", "model"],
+          "description": "Message author role."
+        },
+        "text": { "type": "string", "description": "Markdown text content of the message." },
+        "attachmentType": {
+          "type": "string",
+          "enum": ["none", "image", "pdf", "document"],
+          "description": "Type of multimodal attachment sent with this message."
+        },
+        "attachmentName": { "type": "string", "description": "Display filename of any attached document or image." },
+        "generatedImageFile": { "type": "string", "description": "Local filename for any AI-generated image associated with this turn." },
+        "modelUsed": { "type": "string", "description": "Gemini model name that generated this reply." },
+        "isError": { "type": "boolean", "description": "True if this message represents an API or timeout error." },
+        "clientOrder": { "type": "integer", "description": "Monotonic client sequence timestamp for deterministic ordering." },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp (FieldValue.serverTimestamp()) when message was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp (FieldValue.serverTimestamp()) when message was last updated."
+        }
+      },
+      "required": [
+        "userId",
+        "conversationId",
+        "role",
+        "text",
+        "attachmentType",
+        "isError",
+        "clientOrder",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "MemoryEntry": {
+      "title": "MemoryEntry",
+      "description": "Persistent memory fact, preference, or project context saved for Jarvis AI.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner Firebase Auth UID." },
+        "category": {
+          "type": "string",
+          "enum": ["preference", "fact", "project", "context"],
+          "description": "Memory category."
+        },
+        "content": { "type": "string", "description": "Human-readable memory statement." },
+        "sourceConversationId": { "type": "string", "description": "Optional conversation ID where this memory originated." },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp (FieldValue.serverTimestamp()) when memory was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp (FieldValue.serverTimestamp()) when memory was updated."
+        }
+      },
+      "required": [
+        "userId",
+        "category",
+        "content",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profile and Jarvis AI preferences isolated per authenticated user."
+    },
+    "/users/{userId}/conversations/{conversationId}": {
+      "schema": { "$ref": "#/entities/Conversation" },
+      "description": "User's persistent AI conversation threads."
+    },
+    "/users/{userId}/conversations/{conversationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/ChatMessage" },
+      "description": "Messages belonging to a user's conversation thread."
+    },
+    "/users/{userId}/memories/{memoryId}": {
+      "schema": { "$ref": "#/entities/MemoryEntry" },
+      "description": "Persistent user memories managed with explicit user consent."
+    }
+  }
+}

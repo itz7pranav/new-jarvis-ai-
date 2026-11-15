@@ -1,0 +1,6 @@
+{
+  "name": "Jarvis AI",
+  "description": "Personal intelligent AI assistant powered by Gemini with streaming conversations, persistent memory, multimodal image & PDF analysis, voice interaction, and image generation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
